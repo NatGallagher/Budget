@@ -1,0 +1,63 @@
+<body>
+    <h1>Budget</h1>
+    <div id="budget-form">
+        <p>Fill out the following:<br/>
+            Where: <input type="text" id="location"><br/>
+            Amount: <input type="number" id="amount"><br/>
+            Category:<br/>
+            <label><input type="radio" name="cat" value="Eat Out"> Eat Out</label>
+            <label><input type="radio" name="cat" value="Stores"> Stores</label>
+            <label><input type="radio" name="cat" value="Misc Nat"> Misc Nat</label>
+            <label><input type="radio" name="cat" value="Misc Alli"> Misc Alli</label>
+        </p>
+        <button onclick="submitData()">Submit to Spreadsheet</button>
+        <h3>Balance Remaining: <span id="balance-display">$0.00</span></h3>
+    </div>
+
+    <script>
+        // Run this function as soon as the page loads to show the current balance
+        window.onload = getBalance;
+
+        async function getBalance() {
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbxNrtZzpvh56W1fimvQdmGqtJDbvfqtVLn2gl0OyuSCQEFGUeUd1ys3iic1Z5j9V4v-Fg/exec";
+            
+            // We add ?action=getBalance to the URL so the script knows what to do
+            try {
+                const response = await fetch(webAppUrl + "?action=getBalance");
+                const currentBalance = await response.text();
+
+                //Convert the text to a number and round it to 2 decimal places
+                const formattedBalance = Number(currentBalance).toFixed(2);
+
+                document.getElementById('balance-display').innerText = "$" + formattedBalance;
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
+        }
+
+        async function submitData() {
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbxNrtZzpvh56W1fimvQdmGqtJDbvfqtVLn2gl0OyuSCQEFGUeUd1ys3iic1Z5j9V4v-Fg/exec";
+            const location = document.getElementById('location').value;
+            const amount = document.getElementById('amount').value;
+            const category = document.querySelector('input[name="cat"]:checked').value;
+
+            // Use 'fetch' to send the data to your Google Script
+            const formData = new URLSearchParams({
+                location: location,
+                amount: amount,
+                category: category
+            });
+
+            try {
+                await fetch(webAppUrl, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Required for Google Apps Script redirects
+                });
+                alert("Data sent to spreadsheet!");
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+    </script>
+</body>
