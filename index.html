@@ -58,6 +58,8 @@
             } catch (error) {
                 console.error("Error:", error);
             }
+            document.getElementById("location").value = "";
+            document.getElementById("amount").value = "";
             getBalance();
         }
 
