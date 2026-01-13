@@ -10,7 +10,7 @@
             <label><input type="radio" name="cat" value="Misc Nat"> Misc Nat</label>
             <label><input type="radio" name="cat" value="Misc Alli"> Misc Alli</label>
         </p>
-        <button onclick="submitData()">Submit to Spreadsheet</button>
+        <button onclick="submitData()">Submit to Spreadsheet</button>   <button onclick="resetData()">Clear</button>
         <h3>Balance Remaining: <span id="balance-display">$0.00</span></h3>
     </div>
 
@@ -58,8 +58,12 @@
             } catch (error) {
                 console.error("Error:", error);
             }
-
             getBalance();
+        }
+
+        function resetData() {
+            document.getElementById("location").value = "";
+            document.getElementById("amount").value = "";
         }
     </script>
 </body>

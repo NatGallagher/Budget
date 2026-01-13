@@ -1,0 +1,39 @@
+//this is the Apps Script for Google Sheets
+
+function doPost(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Sheet1");
+  const data = e.parameter;
+  
+  // Define which column the data should go into based on the category
+  const columnMapping = {
+    "Eat Out": 1,   // Column A
+    "Stores": 3,    // Column C
+    "Misc Nat": 5,  // Column E
+    "Misc Alli": 7  // Column G
+  };
+  
+  const colIndex = columnMapping[data.category];
+  const lastRow = sheet.getLastRow();
+  
+  // Find the first empty row in that specific column
+  let targetRow = 1;
+  while (sheet.getRange(targetRow, colIndex).getValue() !== "") {
+    targetRow++;
+  }
+  
+  // Add the Location (e.g., Taco Bell) and Amount (e.g., 12.50)
+  sheet.getRange(targetRow, colIndex).setValue(data.location);
+  sheet.getRange(targetRow, colIndex + 1).setValue(data.amount);
+  
+  return ContentService.createTextOutput("Success").setMimeType(ContentService.MimeType.TEXT);
+}
+function doGet(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("Sheet1");
+  
+  if (e.parameter.action === "getBalance") {
+    const balance = sheet.getRange("M19").getValue(); 
+    return ContentService.createTextOutput(balance).setMimeType(ContentService.MimeType.TEXT);
+  }
+}  
